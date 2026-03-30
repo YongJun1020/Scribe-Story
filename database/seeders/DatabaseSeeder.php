@@ -17,16 +17,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->createMany([
-            [
-                'name' => 'User 1',
-                'email' => 'user1@example.com',
-            ],
-            [
-                'name' => 'User 2',
-                'email' => 'user2@example.com',
-            ],
-        ]);
+        // User::factory()->createMany([
+        //     [
+        //         'name' => 'User 1',
+        //         'email' => 'user1@example.com',
+        //     ],
+        //     [
+        //         'name' => 'User 2',
+        //         'email' => 'user2@example.com',
+        //     ],
+        // ]);
 
         $categories =[
             'Technology',

@@ -1,31 +1,3 @@
-@section('seo_title', $post->title . ' — ' . $post->user->name)
-@section('seo_description', Str::limit(strip_tags($post->content), 155))
-@section('og_type', 'article')
-@section('og_image', $post->imageUrl())
-
-@push('seo_scripts')
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": "{{ e($post->title) }}",
-    "image": "{{ $post->imageUrl() }}",
-    "author": {
-        "@type": "Person",
-        "name": "{{ $post->user->name }}",
-        "url": "{{ route('profile.show', $post->user->username) }}"
-    },
-    "datePublished": "{{ ($post->published_at ?? $post->created_at)->toIso8601String() }}",
-    "dateModified": "{{ $post->updated_at->toIso8601String() }}",
-    "description": "{{ e(Str::limit(strip_tags($post->content), 155)) }}",
-    "publisher": {
-        "@type": "Organization",
-        "name": "{{ config('app.name') }}"
-    }
-}
-</script>
-@endpush
-
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -122,7 +94,28 @@
                     <div class="inline-flex items-center bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
                         {{ $post->category->name }}
                     </div>
-                    <x-like-button :post="$post" />
+                    <div class="flex items-center gap-3">
+                        <div x-data="{
+                            copied: false,
+                            copy() {
+                                navigator.clipboard.writeText(window.location.href);
+                                this.copied = true;
+                                setTimeout(() => this.copied = false, 2000);
+                            }
+                        }">
+                            <button @click="copy()" class="flex items-center gap-1 text-gray-400 hover:text-gray-900 transition-all font-medium text-sm p-2">
+                                <template x-if="!copied">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    </svg>
+                                </template>
+                                <template x-if="copied">
+                                    <span class="text-green-600 font-bold animate-pulse">Copied!</span>
+                                </template>
+                            </button>
+                        </div>
+                        <x-like-button :post="$post" />
+                    </div>
                 </div>
             </div>
         </div>
