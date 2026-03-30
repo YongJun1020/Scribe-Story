@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo-16x16.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>@yield('title', config('app.name', 'Medium Clone'))</title>
+
+        <meta name="description" content="@yield('meta_description', 'A place to read and write big ideas.')">
+        <link rel="canonical" href="{{ url()->current() }}">
+
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:title" content="@yield('title')">
+        <meta property="og:description" content="@yield('meta_description')">
+        <meta property="og:image" content="@yield('og_image', asset('images/default-share.jpg'))">
+        <meta property="og:url" content="{{ url()->current() }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title')">
+        <meta name="twitter:description" content="@yield('meta_description')">
+        <meta name="twitter:image" content="@yield('og_image')">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

@@ -1,21 +1,48 @@
+@section('seo_title', $post->title . ' — ' . $post->user->name)
+@section('seo_description', Str::limit(strip_tags($post->content), 155))
+@section('og_type', 'article')
+@section('og_image', $post->imageUrl())
+
+@push('seo_scripts')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{ e($post->title) }}",
+    "image": "{{ $post->imageUrl() }}",
+    "author": {
+        "@type": "Person",
+        "name": "{{ $post->user->name }}",
+        "url": "{{ route('profile.show', $post->user->username) }}"
+    },
+    "datePublished": "{{ ($post->published_at ?? $post->created_at)->toIso8601String() }}",
+    "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+    "description": "{{ e(Str::limit(strip_tags($post->content), 155)) }}",
+    "publisher": {
+        "@type": "Organization",
+        "name": "{{ config('app.name') }}"
+    }
+}
+</script>
+@endpush
+
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 md:p-8">
-                
+
                 {{-- Title --}}
                 <h1 class="text-4xl font-extrabold text-gray-900 leading-tight">{{ $post->title }}</h1>
-                
+
+                {{-- Author & Date --}}
                 <div class="flex flex-col md:flex-row mt-6 justify-between items-start md:items-center gap-4">
                     <div class='flex flex-row items-center'>
                         <x-user-avatar :user="$post->user" size="h-14 w-14" imageType="profile" />
-                        
                         <x-follow-btn :user="$post->user" class="flex flex-col">
                             <div class="flex gap-2 ms-3 items-center">
                                 <a href="{{ route('profile.show', $post->user->username) }}" class="hover:underline">
                                     <h3 class="font-bold text-gray-900">{{ $post->user->name }}</h3>
                                 </a>
-                                
                                 @if(auth()->check() && auth()->id() != $post->user->id)
                                     <span class="text-gray-300">&middot;</span>
                                     <button @click="follow()" 
@@ -27,13 +54,9 @@
                             </div>
 
                             <div class="flex flex-wrap gap-1 ms-3 text-sm text-gray-500 items-center">
-                                {{-- Read Time Logic --}}
                                 <span>{{ $post->readTime() }} {{ Str::plural('min', $post->readTime()) }} read</span>
                                 <span>&middot;</span>
-                                
-                                {{-- Date & Updated Logic --}}
                                 <span>{{ ($post->published_at ?? $post->created_at)->format('M d, Y') }}</span>
-
                                 @if($post->updated_at->gt($post->published_at ?? $post->created_at))
                                     <span class="text-xs italic text-gray-400 ml-1">
                                         (Updated {{ $post->updated_at->diffForHumans() }})
@@ -55,8 +78,6 @@
                                 <x-button type="danger" @click="showModal = true" class="py-1.5 text-xs">
                                     Delete
                                 </x-button>
-
-                                {{-- Delete Modal --}}
                                 <div x-show="showModal"
                                     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" 
                                     x-transition x-cloak>

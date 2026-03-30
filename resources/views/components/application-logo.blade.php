@@ -1,1 +1,1 @@
-<img src="/logo.webp" class='h-4' alt="Logo">
+<img src="/logo.png" class='h-12' alt="Logo">
