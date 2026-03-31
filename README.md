@@ -1,4 +1,4 @@
-# Medium Clone
+# Scribe & Story
 
 A Medium-like blogging platform where users can read and publish articles, follow other writers, and interact through likes.
 
