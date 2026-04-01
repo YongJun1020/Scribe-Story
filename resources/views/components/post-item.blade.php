@@ -1,6 +1,6 @@
 <a href="{{ route('post.show', ['username' => $post->user->username, 'post' => $post->slug]) }}" class="group">
     <div x-data="{
-            hasLiked: {{ auth()->user()?->hasLiked($post) ? 'true' : 'false' }},
+            hasLiked: {{ $post->userLike ? 'true' : 'false' }},
             formatNumber(num) {
                 if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
                 if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';

@@ -24,7 +24,7 @@
                     {{-- Image Upload Section --}}
                     <div x-data="{
                         imageUrl: {{ $post->imageUrl() ? "'{$post->imageUrl()}'" : 'null' }},
-                        fileName: 'Click to upload or drag and drop',
+                        fileName: 'Click to upload',
                         fileChosen(event) {
                             const file = event.target.files[0];
                             if (!file) return;

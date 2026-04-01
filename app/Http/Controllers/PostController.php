@@ -22,7 +22,7 @@ class PostController extends Controller
         //     \Log::info($query->sql);
         // });
         $user = auth()->user();
-        $query = Post::with(['user', 'media'])->withCount('likes')->where('published_at', '<=', now())->orWhereNull('published_at');
+        $query = Post::with(['user', 'media', 'userLike'])->withCount('likes')->where('published_at', '<=', now())->orWhereNull('published_at');
         // Get post from user that we follow and our own post
         // if($user) {
         //     $ids = $user->following()->pluck('users.id');
@@ -144,7 +144,7 @@ class PostController extends Controller
     public function category(Category $category)
     {
         $user = auth()->user();
-        $query = $category->posts()->with(['user', 'media'])->withCount('likes')->where('published_at', '<=', now())->orWhereNull('published_at');
+        $query = $category->posts()->with(['user', 'media', 'userLike'])->withCount('likes')->where('published_at', '<=', now())->orWhereNull('published_at');
         if ($user) {
             $ids = $user->following()->pluck('users.id')->toArray();
 
@@ -170,7 +170,7 @@ class PostController extends Controller
     public function myPosts()
     {
         $user = auth()->user();
-        $posts = $user->posts()->with(['user', 'media'])->withCount('likes')->latest()->paginate(5);
+        $posts = $user->posts()->with(['user', 'media', 'userLike'])->withCount('likes')->latest()->paginate(5);
 
         return view('post.index', [
             'posts' => $posts,

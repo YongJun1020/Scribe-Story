@@ -17,57 +17,59 @@
                         </div>
                     </div>
                     <hr class="my-8 border-gray-100">
-                    <div x-data="{ openSection: null }">
-                        <div class="overflow-hidden my-4">
-                            <button @click="openSection = (openSection === 'following' ? null : 'following')" 
-                                    class="w-full flex items-center justify-between">
-                                <span class="text-lg font-bold text-gray-900">Following ({{ $user->following->count() }})</span>
-                                <svg :class="openSection === 'following' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div x-show="openSection === 'following'" x-collapse>
-                                <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    @forelse($user->following as $followingUser)
-                                        <a href="{{ route('profile.show', $followingUser->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
-                                            <x-user-avatar :user="$followingUser" size="h-10 w-10" imageType="profile" class="rounded-full" />
-                                            <div class="flex flex-col">
-                                                <span class="text-sm font-bold text-gray-900">{{ $followingUser->name }}</span>
-                                                <span class="text-xs text-gray-500">@<span>{{ $followingUser->username }}</span></span>
-                                            </div>
-                                        </a>
-                                    @empty
-                                        <p class="text-sm text-gray-500 col-span-full italic py-4">Not following anyone yet.</p>
-                                    @endforelse
+                    @if (auth()->id() === $user->id)
+                        <div x-data="{ openSection: null }">
+                            <div class="overflow-hidden my-4">
+                                <button @click="openSection = (openSection === 'following' ? null : 'following')" 
+                                        class="w-full flex items-center justify-between">
+                                    <span class="text-lg font-bold text-gray-900">Following ({{ $user->following->count() }})</span>
+                                    <svg :class="openSection === 'following' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-show="openSection === 'following'" x-collapse>
+                                    <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        @forelse($user->following as $followingUser)
+                                            <a href="{{ route('profile.show', $followingUser->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
+                                                <x-user-avatar :user="$followingUser" size="h-10 w-10" imageType="profile" class="rounded-full" />
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-bold text-gray-900">{{ $followingUser->name }}</span>
+                                                    <span class="text-xs text-gray-500">@<span>{{ $followingUser->username }}</span></span>
+                                                </div>
+                                            </a>
+                                        @empty
+                                            <p class="text-sm text-gray-500 col-span-full italic py-4">Not following anyone yet.</p>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-8 border-gray-100">
+                            <div class="overflow-hidden my-4">
+                                <button @click="openSection = (openSection === 'followers' ? null : 'followers')" 
+                                        class="w-full flex items-center justify-between">
+                                    <span class="text-lg font-bold text-gray-900">Followers ({{ $user->followers->count() }})</span>
+                                    <svg :class="openSection === 'followers' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-show="openSection === 'followers'" x-collapse>
+                                    <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        @forelse($user->followers as $follower)
+                                            <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
+                                                <x-user-avatar :user="$follower" size="h-10 w-10" imageType="profile" class="rounded-full" />
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-bold text-gray-900">{{ $follower->name }}</span>
+                                                    <span class="text-xs text-gray-500">@<span>{{ $follower->username }}</span></span>
+                                                </div>
+                                            </a>
+                                        @empty
+                                            <p class="text-sm text-gray-500 col-span-full italic py-4">No followers yet.</p>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <hr class="my-8 border-gray-100">
-                        <div class="overflow-hidden my-4">
-                            <button @click="openSection = (openSection === 'followers' ? null : 'followers')" 
-                                    class="w-full flex items-center justify-between">
-                                <span class="text-lg font-bold text-gray-900">Followers ({{ $user->followers->count() }})</span>
-                                <svg :class="openSection === 'followers' ? 'rotate-180' : ''" class="w-5 h-5 text-gray-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div x-show="openSection === 'followers'" x-collapse>
-                                <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    @forelse($user->followers as $follower)
-                                        <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
-                                            <x-user-avatar :user="$follower" size="h-10 w-10" imageType="profile" class="rounded-full" />
-                                            <div class="flex flex-col">
-                                                <span class="text-sm font-bold text-gray-900">{{ $follower->name }}</span>
-                                                <span class="text-xs text-gray-500">@<span>{{ $follower->username }}</span></span>
-                                            </div>
-                                        </a>
-                                    @empty
-                                        <p class="text-sm text-gray-500 col-span-full italic py-4">No followers yet.</p>
-                                    @endforelse
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
                 <aside class="md:w-1/4 md:sticky md:top-24">

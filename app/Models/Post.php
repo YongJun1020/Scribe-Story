@@ -66,7 +66,7 @@ class Post extends Model implements HasMedia
     public function imageUrl($conversionName='')
     {
         // return $this->image ? Storage::url($this->image) : null;
-        
+
         $media = $this->getFirstMedia('post');
         if(!$media){
             return null;
@@ -76,5 +76,10 @@ class Post extends Model implements HasMedia
         }
         return $media->getUrl();
         // return $this->getFirstMedia('post')?->getUrl($conversionName);
+    }
+
+    public function userLike()
+    {
+        return $this->hasOne(Like::class)->where('user_id', auth()->id());
     }
 }
