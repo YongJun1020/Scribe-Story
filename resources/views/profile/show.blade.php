@@ -28,7 +28,7 @@
                                     </svg>
                                 </button>
                                 <div x-show="openSection === 'following'" x-collapse>
-                                    <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         @forelse($user->following as $followingUser)
                                             <a href="{{ route('profile.show', $followingUser->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
                                                 <x-user-avatar :user="$followingUser" size="h-10 w-10" imageType="profile" class="rounded-full" />
@@ -53,7 +53,7 @@
                                     </svg>
                                 </button>
                                 <div x-show="openSection === 'followers'" x-collapse>
-                                    <div class="p-6 pt-0 border-t border-gray-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         @forelse($user->followers as $follower)
                                             <a href="{{ route('profile.show', $follower->username) }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
                                                 <x-user-avatar :user="$follower" size="h-10 w-10" imageType="profile" class="rounded-full" />
@@ -120,7 +120,6 @@
                         </div>
                     </x-follow-btn>
                 </aside>
-
             </div>
         </div>
     </div>

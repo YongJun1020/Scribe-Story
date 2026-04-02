@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-32x32.png') }}">

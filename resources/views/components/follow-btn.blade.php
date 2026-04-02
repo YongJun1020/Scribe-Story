@@ -1,6 +1,6 @@
 @props(['user'])
 
-<div {{ $attributes }}x-data="{
+<div {{ $attributes }} x-data="{
                     following: {{ $user->isFollowedBy(auth()->user()) ? 'true' : 'false' }},
                     followersCount: {{ $user->followers()->count() }},
                     formatNumber(num) {
@@ -14,6 +14,10 @@
                             this.followersCount = res.data.followers
                         }).catch(err => {
                             console.log(err)
+                            if (err.response && err.response.status === 403) {
+                                window.location.href = '/verify-email';
+                                return;
+                            }
                         })
                     }
                 }"
