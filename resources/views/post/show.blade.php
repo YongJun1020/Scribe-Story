@@ -90,31 +90,146 @@
                 </div>
 
                 {{-- Footer Info --}}
-                <div class="mt-10 pt-6 border-t border-gray-100 flex items-center justify-between">
-                    <div class="inline-flex items-center bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                        {{ $post->category->name }}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div x-data="{
-                            copied: false,
-                            copy() {
-                                navigator.clipboard.writeText(window.location.href);
-                                this.copied = true;
-                                setTimeout(() => this.copied = false, 2000);
-                            }
-                        }">
-                            <button @click="copy()" class="flex items-center gap-1 text-gray-400 hover:text-gray-900 transition-all font-medium text-sm p-2">
-                                <template x-if="!copied">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                    </svg>
-                                </template>
-                                <template x-if="copied">
-                                    <span class="text-green-600 font-bold animate-pulse">Copied!</span>
-                                </template>
-                            </button>
+                <div>
+                    <div class="mt-10 pt-6 border-t border-gray-100 flex items-center justify-between">
+                        <div class="inline-flex items-center bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                            {{ $post->category->name }}
                         </div>
-                        <x-like-button :post="$post" />
+                        <div class="flex items-center gap-3">
+                            <x-like-button :post="$post" />
+                            <x-comment-button :post="$post" />
+                            <div x-data="{
+                                copied: false,
+                                copy() {
+                                    navigator.clipboard.writeText(window.location.href);
+                                    this.copied = true;
+                                    setTimeout(() => this.copied = false, 2000);
+                                }
+                            }" class="flex items-center justify-center min-w-[60px]"> <button @click="copy()" class="transition-all hover:text-blue-500 flex items-center">
+                                    <template x-if="!copied">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                                        </svg>
+                                    </template>
+                                    <template x-if="copied">
+                                        <span class="text-green-600 font-bold text-xs animate-pulse">Copied!</span>
+                                    </template>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="comments" class="mt-6 pt-6 border-t border-gray-100">
+                        <h2 class="text-xl font-bold text-gray-900">Comments</h2>
+                        <form action="{{ route('comment', $post) }}" method="POST" class="mt-3 group relative">
+                            @csrf
+                            <textarea
+                                name="comment"
+                                rows="1"
+                                class="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-400 focus:bg-white transition-all outline-none resize-none"
+                                placeholder="Share your thoughts..." 
+                                required></textarea>
+                            <div class="flex justify-end">
+                                <x-button type="secondary" class="!rounded-2xl">
+                                    Send
+                                </x-button>
+                            </div>
+                        </form>
+                        <div class="mt-3 space-y-2">
+                            @foreach($post->parentComment as $comment)
+                                <div
+                                    x-data="{ showReply: false }"
+                                    class="group relative flex flex-col p-4 rounded-xl transition-all duration-200 hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-100"
+                                    @click="if (!$event.target.closest('button, a, textarea, input')) showReply = !showReply"
+                                >
+                                    <div class="flex items-start gap-4">
+                                        <div class="flex-shrink-0">
+                                            <x-user-avatar :user="$comment->user" size="h-9 w-9" imageType="profile" class="rounded-full shadow-sm" />
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between">
+                                                <a href="{{ route('profile.show', $comment->user->username) }}" 
+                                                class="font-bold text-gray-500 text-sm hover:underline">
+                                                    {{ $comment->user->name }}
+                                                </a>
+                                            </div>
+                                            <p class="text-gray-800 text-sm leading-relaxed">
+                                                {{ $comment->comment }}
+                                            </p>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-gray-500 text-xs">
+                                                    {{ $comment->created_at->diffForHumans() }}
+                                                </span>
+                                                <span class="text-xs text-gray-500 hover:underline cursor-pointer">
+                                                    Click to Reply
+                                                </span>
+                                            </div>
+                                            <div
+                                                x-show="showReply"
+                                                x-cloak
+                                                x-transition:enter="transition ease-out duration-200"
+                                                x-transition:enter-start="opacity-0 scale-95"
+                                                x-transition:enter-end="opacity-100 scale-100"
+                                                class="mt-4"
+                                                @click.stop
+                                            >
+                                                <form action="{{ route('comment', $post) }}" method="POST" class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                                                    @csrf
+                                                    <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+                                                    <textarea
+                                                        name="comment"
+                                                        rows="2"
+                                                        class="w-full p-3 text-sm bg-gray-50 border-none rounded-md focus:ring-2 focus:ring-blue-100 outline-none resize-none" 
+                                                        placeholder="Write your reply..."
+                                                        required
+                                                    ></textarea>
+                                                    <div class="flex justify-end gap-2 mt-2">
+                                                        <button type="button" @click="showReply = false" class="text-xs font-semibold text-gray-500 px-3 py-1 hover:bg-gray-100 rounded">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="submit" class="bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-md hover:bg-blue-700 shadow-sm transition">
+                                                            Send Reply
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($comment->replies->count() > 0)
+                                    <div class="ml-12 mt-2 space-y-4 border-l-2 border-gray-100 pl-4 mb-6">
+                                        @foreach($comment->replies as $reply)
+                                            <div class="flex items-start gap-3">
+                                                <div class="flex-shrink-0">
+                                                    <x-user-avatar :user="$reply->user" size="h-9 w-9" imageType="profile" class="rounded-full shadow-sm" />
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <a href="{{ route('profile.show', $reply->user->username) }}" 
+                                                        class="font-bold text-gray-500 text-sm hover:underline">
+                                                            {{ $reply->user->name }}
+                                                        </a>
+                                                    </div>
+                                                    <p class="text-gray-800 text-sm leading-relaxed">
+                                                        {{ $reply->comment }}
+                                                    </p>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-gray-500 text-xs">
+                                                            {{ $reply->created_at->diffForHumans() }}
+                                                        </span>
+                                                        <span class="text-xs text-gray-500 hover:underline cursor-pointer">
+                                                            Click to Reply
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                @if(!$loop->last)
+                                    <hr class="my-8 border-gray-100">
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

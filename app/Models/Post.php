@@ -57,6 +57,14 @@ class Post extends Model implements HasMedia
         return $this->hasMany(Like::class);
     }
 
+    public function comment(){
+        return $this->hasMany(Comment::class);
+    }
+    public function parentComment()
+    {
+        return $this->hasMany(Comment::class)->whereNull('parent_id')->latest();
+    }
+
     public function readTime($wordsPerMinute = 100){
         $wordCount = str_word_count(strip_tags($this->content));
         $readingTime = ceil($wordCount / $wordsPerMinute);
